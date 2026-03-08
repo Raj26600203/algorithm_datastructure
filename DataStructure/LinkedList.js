@@ -38,24 +38,218 @@ class LinkedList {
     };
 
     append(value){
+        console.log('-'.repeat(30));
+        console.log('Append function is called');
+        console.log('-'.repeat(30));
         const newNode = new Node(value);
         this.tail.next = newNode;
         this.tail = newNode;
         this.length ++;
         return this;    
-    }
+    };
 
     prepend(value){
-        const newNode = new Node (value);
+        console.log('-'.repeat(30));
+        console.log('Prepend function is called');
+        console.log('-'.repeat(30));
+        const newNode = new Node(value);
         newNode.next = this.head;
         this.head = newNode;
         this.length ++;
+        return this;
+    };
+
+    insert(index, value){
+        //overriden node -1 -->new node --> overridden node --> overridden node + 1 
+        console.log('-'.repeat(30));
+        console.log('[insert] Insert function is called');
+        console.log('-'.repeat(30));
+        
+        console.log(`[insert] index passed: ${index} and value ${value}`)
+        const newNode = new Node(value);
+        if(index >= this.length-1){
+            console.log(`[insert] Passed Index ${index} exceeded the one of the last node, hence the value has been appended`);
+            this.append(value);
+            return this;
+        };
+
+        if(index <= 0){
+            console.log(`[insert] Passed Index ${index} is less than or equal to 0, so the value ${value} will be prepended`);
+            this.prepend(value);
+            return this;
+        }
+
+        const previousNodeOfNewNode = this.traversalToIndex(index-1);
+        
+        
+        console.log('[insert] Previous node of the new node is ');
+        console.log(previousNodeOfNewNode);
+        
+        newNode.next = previousNodeOfNewNode.next;
+        console.log(`[insert] The new node's next node is the one of the previous node - New node:`);
+        console.log(newNode)
+
+        previousNodeOfNewNode.next = newNode;
+        console.log(`[insert] The new node is set to the previous node's next property`);
+        console.log(previousNodeOfNewNode);
+
+        console.log(`[insert] The new node is followed by`)
+        console.log(newNode.next);
+
+        this.length ++;
+
+        return this;
+    }
+
+    delete = (index) => {
+        console.log('-'.repeat(30));
+        console.log('Delete function is called');
+        console.log('-'.repeat(30));
+        console.log(`index passed: ${index}`)   
+        if(index > this.length-1 | index <0 ){
+            console.log('Index is out of bound');
+            return this;
+        } 
+        const nodeTobeDeleted = this.traversalToIndex(index);
+        console.log('Deleting');
+        console.log(nodeTobeDeleted);
+        nodeTobeDeleted.value = nodeTobeDeleted.next.value;
+        nodeTobeDeleted.next = nodeTobeDeleted.next.next;
+        this.length --;
+        console.log(`Now the index of ${index} is set to`);
+        console.log(nodeTobeDeleted);
+
+        return this;
+    }
+
+    traversalToIndex = (index) => {
+        let counter = 0;
+        let currentNode = this.head;
+        
+        while(counter !== index){
+            currentNode = currentNode.next;
+            counter ++;
+        }
+
+        return currentNode;
+    }
+
+    print(){
+        let currentNode = this.head;
+        let result = '';
+        while(currentNode){
+            result += `${currentNode.value} ->`;
+            currentNode = currentNode.next;
+        }
+        console.log(result+'null');
+    }
+
+    reverse_old(){
+        console.log('-'.repeat(30));
+        console.log('Reverse function is called');
+        console.log('-'.repeat(30));
+        let currentNode = this.head;
+        //Make a deep copy, otherwise the head's next property would be overridden.
+        this.tale = {
+            value:this.head.value,
+            next:null,
+        };
+
+        for(let i=1; i<this.length; i++){
+            debugger;
+            let currentValue = currentNode.value;
+            console.log(`[reverse] Current node's value is stored`);
+            console.table(currentValue)
+            currentNode.value = currentNode.next.value;
+            console.log('[reverse]First operation is done');
+            console.table(currentNode);
+            currentNode.next.value =  currentValue;
+            this.head = currentNode;
+            console.log('[reverse]Final operation is done');
+            console.log('[reverse]Current head is now set as');
+            console.table(this.head);
+        }
+        console.log('Reversed head is ')
+        console.table(this.head);
+        console.log('Reversed tail is ')
+        console.table(this.tail);
+        return this;
+    }
+    reverse() {
+        //When the linked list only has an element, this will return the head.
+        if(!this.head.next){
+            return this.head;
+        }
+
+        let first = this.head;
+        let second = first.next;
+
+        //Cut off the unecessary following node details of the head, which will be placed at the tail
+        this.head.next=null;
+        this.tail = this.head;
+
+        //[0,1,2,3,4,5,6]
+        /**
+         * head: 0->1->2->3->4->5->6
+         * first: 0->1->2->3->4->5->6
+         * second: 1->2->3->4->5->6
+         * head: 0 ->null (head.next = null)
+         * loop 1:
+            * temp = second.next
+            * temp = 2->3->4->5->6
+            * second.next = first
+            * second = 1->0->null
+            * first = second
+            * first = 1->0->null
+            * second = temp
+            * second = 2->3->4->5->6
+        * loop 2:
+            * temp = second.next
+            * temp : 3->4->5->6
+            * second.next = first
+            * second: 2->1->0->null
+            * first = second
+            * first = 2->1->0->null
+            * second = temp
+            * second = 3->4->5->6
+            * 
+        */
+
+        while(second){
+            const nextAdjacentNode = second.next;
+            //Reverse the pointer the second node of the consecutive pair
+            second.next = first;
+            
+            //Replace the first node with the second one of the consecutive pair, which points to the first
+            first = second;
+
+            //Set the node right next to the second, currently the first node, to the second node
+            second = nextAdjacentNode;
+
+        };
+
+        this.head = first;
+
         return this;
     }
 }
 
 const myLinkedList1 = new LinkedList(1);
-myLinkedList1.append(23);
-myLinkedList1.append(32);
-myLinkedList1.prepend(12);
-console.log(`Head \n    value: ${myLinkedList1.head.value}, \n    next: ${myLinkedList1.head.next.value} \nTail \n   value: ${myLinkedList1.tail.value},\n   next: ${myLinkedList1.tail.next}`);
+myLinkedList1.append(2);
+myLinkedList1.append(3);
+myLinkedList1.prepend(1);
+//1,1,2,3
+myLinkedList1.insert(2,1.5)
+myLinkedList1.print();
+//1,1,1.5,2,3
+myLinkedList1.delete(1);
+//1,1.5,2,3
+myLinkedList1.print();
+
+//3,2,1.5,1
+myLinkedList1.reverse();
+myLinkedList1.print();
+
+
+console.log('Linkedlist Now');
+console.log(myLinkedList1);
