@@ -1,6 +1,6 @@
 import LinkedList from "./LinkedList.js";
 
-export default class Stack {
+export class LinkedListStack {
     constructor(){
         this.top = null;
         this.bottom = null;
@@ -12,7 +12,7 @@ export default class Stack {
             console.warn('The stack is empty.')
             return this;
         }
-        return this.top;
+        return this;
     }
 
     push(value){
@@ -28,14 +28,14 @@ export default class Stack {
     }
 
     pop(){
-        if(this.linkedList === undefined){
+        if(this.isEmpty()){
             console.warn('The stack is empty');
-            return this;
+            return null;
         }
         this.linkedList.delete(this.length-1);
         this.top = this.linkedList.tail.value;
         this.length --;
-        return this.top.value;
+        return this;
     }
 
     isEmpty(){
@@ -47,8 +47,46 @@ export default class Stack {
 
 }
 
+export class ArrayStack {
+    constructor(){
+        //this.top = null; //Revision: not necessary - save memory
+        //this.bottom = null; //Revision: not necessary - save memory 
+        this.array = []; 
+        //this.length = 0; //Revision: not necessary - save memory
+    }
+    isEmpty(){
+        if (this.array.length <= 0){
+            console.warn('[isEmpty] The stack is empty')
+            return true;
+        }
+        return false;
+    }
 
-const myStack = new Stack();
+    peek() {
+        // if(this.isEmpty){
+        //     return null;
+        // }
+        // return (this.top);
+        return this.array[this.array.length - 1];
+    }
+
+    push(value) {
+        this.array.push(value);
+        // this.top = value;
+        // this.length ++;
+        return this;
+    }
+
+    pop(){
+        this.array.pop();
+        //this.top = this.array(this.length-1);
+        this.length --;
+        return this;
+    }
+}
+
+
+const myStack = new LinkedListStack();
 myStack.peek();
 myStack.push(1);
 myStack.push(2);
