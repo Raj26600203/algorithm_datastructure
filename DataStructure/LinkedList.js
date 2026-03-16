@@ -24,7 +24,7 @@ class Node {
     }
 }
 
-class LinkedList {
+export default class LinkedList {
     constructor(value){
         //The first node of a linked list being created
         this.head ={
@@ -40,22 +40,22 @@ class LinkedList {
     append(value){
         console.log('-'.repeat(30));
         console.log('Append function is called');
-        console.log('-'.repeat(30));
         const newNode = new Node(value);
         this.tail.next = newNode;
         this.tail = newNode;
         this.length ++;
+        console.log('-'.repeat(30));
         return this;    
     };
 
     prepend(value){
         console.log('-'.repeat(30));
         console.log('Prepend function is called');
-        console.log('-'.repeat(30));
         const newNode = new Node(value);
         newNode.next = this.head;
         this.head = newNode;
         this.length ++;
+        console.log('-'.repeat(30));
         return this;
     };
 
@@ -63,7 +63,6 @@ class LinkedList {
         //overriden node -1 -->new node --> overridden node --> overridden node + 1 
         console.log('-'.repeat(30));
         console.log('[insert] Insert function is called');
-        console.log('-'.repeat(30));
         
         console.log(`[insert] index passed: ${index} and value ${value}`)
         const newNode = new Node(value);
@@ -97,28 +96,37 @@ class LinkedList {
         console.log(newNode.next);
 
         this.length ++;
-
+        console.log('-'.repeat(30));
         return this;
     }
 
     delete = (index) => {
         console.log('-'.repeat(30));
         console.log('Delete function is called');
-        console.log('-'.repeat(30));
-        console.log(`index passed: ${index}`)   
-        if(index > this.length-1 | index <0 ){
+        
+        console.log(`[delete]index passed: ${index}`)   
+        if(index < 0 || index > (this.length -1)){
             console.log('Index is out of bound');
             return this;
         } 
-        const nodeTobeDeleted = this.traversalToIndex(index);
-        console.log('Deleting');
-        console.log(nodeTobeDeleted);
-        nodeTobeDeleted.value = nodeTobeDeleted.next.value;
-        nodeTobeDeleted.next = nodeTobeDeleted.next.next;
+        const previousNode = this.traversalToIndex(index-1);
+        const nodeTobeRemoved = previousNode.next;
+        console.log(`[delete]The previous node of a node to be deleted is: `);
+        console.log(previousNode);
+        console.log(`[delete]The current next node set to the node  to be deleted is: `)
+        console.log(nodeTobeRemoved.next);
+        console.log(`[delete]Replacing the previous node's next value to the next node of the node to be removed....`);
+        previousNode.next = nodeTobeRemoved.next;
+        console.log(previousNode.next);        
+        
         this.length --;
-        console.log(`Now the index of ${index} is set to`);
-        console.log(nodeTobeDeleted);
-
+        if(!previousNode.next){
+            console.log('[delete]The tail node has been removed. Overriding the tail information');
+            this.tail = previousNode;
+        }
+        console.log(`[delete]Now the index of ${index} is set to`);
+        console.log(previousNode.next??'Null as the removed node was the tail, which is currently'+ this.tail.value);
+        console.log('-'.repeat(30));
         return this;
     }
 
@@ -156,18 +164,13 @@ class LinkedList {
         };
 
         for(let i=1; i<this.length; i++){
+            //! No traversal - the loop never moves to the next node by currentNode.next
+            //!The operations only swap the data, not the structure of the linked list, swapping and updating nodes themselves
             debugger;
             let currentValue = currentNode.value;
-            console.log(`[reverse] Current node's value is stored`);
-            console.table(currentValue)
             currentNode.value = currentNode.next.value;
-            console.log('[reverse]First operation is done');
-            console.table(currentNode);
             currentNode.next.value =  currentValue;
             this.head = currentNode;
-            console.log('[reverse]Final operation is done');
-            console.log('[reverse]Current head is now set as');
-            console.table(this.head);
         }
         console.log('Reversed head is ')
         console.table(this.head);
